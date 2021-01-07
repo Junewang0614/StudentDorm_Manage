@@ -142,6 +142,9 @@ public class RoomManageFrm extends JInternalFrame {
 				"\u623F\u95F4\u53F7", "\u623F\u95F4\u72B6\u6001", "\u6210\u5458\u6570\u91CF", "\u5176\u4ED6"
 			}
 		));
+		RoomListTable.getTableHeader().setFont(new Font("Dialog", 0, 19));
+		RoomListTable.setRowHeight(30);
+		RoomListTable.setFont(new Font("Dialog", 0, 19));
 		scrollPane.setViewportView(RoomListTable);
 		getContentPane().setLayout(groupLayout);
 

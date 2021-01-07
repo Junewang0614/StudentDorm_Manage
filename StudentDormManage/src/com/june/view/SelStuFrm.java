@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -14,7 +16,15 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.june.dao.AdminDao;
+import com.june.dao.StudentDao;
+import com.june.model.Student;
+
 import javax.swing.JTextPane;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.awt.event.ActionEvent;
 
 public class SelStuFrm extends JInternalFrame {
 	private JTextField StuIDtextField;
@@ -52,6 +62,11 @@ public class SelStuFrm extends JInternalFrame {
 		StuIDtextField.setColumns(10);
 		
 		JButton btnNewButton = new JButton("\u67E5\u8BE2");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				selectDorminfo();
+			}
+		});
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -85,5 +100,38 @@ public class SelStuFrm extends JInternalFrame {
 
 		setClosable(true);
 		setIconifiable(true);
+	}
+	
+	protected void selectDorminfo() {
+		// TODO Auto-generated method stub
+		//1.整理输入参数
+		List<Student> stuList = null;
+		String stu_id = StuIDtextField.getText(); 
+		//2.链接数据库
+		
+		AdminDao adminDao = new AdminDao();
+		//1.先检查学生存不存在
+		if(adminDao.StuExists(stu_id) == false)
+		{
+			adminDao.closeDao();
+			JOptionPane.showMessageDialog(this,"学生不存在!");
+			return;
+		}
+		adminDao.closeDao();
+		StudentDao stuDao = new StudentDao();
+		stuList = stuDao.getStuList(stu_id);
+		stuDao.closeDao();
+		//3.整理表示
+		if(stuList == null)
+		{
+			JOptionPane.showMessageDialog(this,"用户还未登记在宿舍!");
+			return;
+		}
+		else {
+			//1.获取宿舍号
+			String domid = stuList.get(0).getDom_ID();
+			new StuRoominfo(stuList, domid).setVisible(true);
+		}
+		
 	}
 }
